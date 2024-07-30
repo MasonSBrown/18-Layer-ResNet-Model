@@ -6,6 +6,21 @@ import zipfile
 import os
 import matplotlib.pyplot as plt
 
+#Two different datasets are created for training and validation
+test_dir = os.path.join('archive', "test")
+train_dir = os.path.join('archive', "train")
+
+#Parameters
+batch_size = 32
+img_height = 224
+img_width = 224
+
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    train_dir,
+    seed=123,
+    image_size=(img_height, img_width),
+    batch_size=batch_size)
+
 print("Tensorflow is intalled. Version:", tf.__version__)
 
 #Residual block is defined
@@ -16,6 +31,3 @@ def residual_block(parameters):
 def build_resnet18(input_shape, num_classes):
     return
 
-#Two different datasets are created for training and validation
-train_dataset = 0
-validation_dataset = 0
