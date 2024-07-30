@@ -7,7 +7,7 @@ import os
 import matplotlib.pyplot as plt
 
 #Two different datasets are created for training and validation
-test_dir = os.path.join('archive', "test")
+val_dir = os.path.join('archive', "val")
 train_dir = os.path.join('archive', "train")
 
 #Parameters
@@ -15,8 +15,15 @@ batch_size = 32
 img_height = 224
 img_width = 224
 
+#Loads images from specified directory and creates a 'tf.data.Dataset' object
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
     train_dir,
+    seed=123, #random seed for shuffling and transformations
+    image_size=(img_height, img_width),
+    batch_size=batch_size)
+
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    val_dir,
     seed=123,
     image_size=(img_height, img_width),
     batch_size=batch_size)
