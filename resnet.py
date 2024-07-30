@@ -1,15 +1,13 @@
 import tensorflow as tf
-# from tensorflow.keras import layers, models
+from tensorflow.keras import layers, models
 import numpy as np
+import pandas as pd
+import zipfile
 import os
 import matplotlib.pyplot as plt
 
-try:
-    import tensorflow as tf
-    print("TensorFlow is installed. Version:", tf.__version__)
-except ImportError:
-    print("TensorFlow is not installed.")
-    
+print("Tensorflow is intalled. Version:", tf.__version__)
+
 #Residual block is defined
 def residual_block(parameters):
     return
