@@ -2,6 +2,7 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
+from torchvision.models import ResNet18_Weights
 import zipfile
 import os
 import matplotlib.pyplot as plt
@@ -34,8 +35,16 @@ val_dataset = datasets.ImageFolder(val_dir, transform=val_transforms)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False) #testing how well model works
 
-# Pretrained ResNet-18 model 
-model = models.resnet18(pretrained=False) #optional, but generally better to use:
+
+
+# Pretrained ResNet-18 model ******************************************************************
+
+model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1) #Pretrained matrix weights from ImageNet
+# model = models.resnet18() #Non Pretrained model
+
+#**********************************************************************************************
+
+
 
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2) #2 outputs, cat and dog (fc for feature count?)
@@ -54,7 +63,7 @@ else:
     device = torch.device("cpu")
     print("MPS backend not available, using CPU")
 
-model = model.to(device)
+model = model.to(device) #setting device to model
 
 def train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=10):
     for epoch in range(num_epochs):
@@ -98,6 +107,7 @@ def train_model(model, criterion, optimizer, train_loader, val_loader, num_epoch
 
         val_loss = val_loss / len(val_loader.dataset)
         val_acc = val_corrects / len(val_loader.dataset)
+
 
         print(f'Val Loss: {val_loss:.4f} Acc: {val_acc:.4f}')
 
