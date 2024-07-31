@@ -84,6 +84,9 @@ def train_model(model, criterion, optimizer, train_loader, val_loader, num_epoch
             running_loss += loss.item() * inputs.size(0)
             running_corrects += torch.sum(preds == labels.data).item()
 
+        #Training Loss and Accuracy 
+        #(Average loss over the entire training dataset)
+        #(Accuracy over the entire training dataset)
         epoch_loss = running_loss / len(train_loader.dataset)
         epoch_acc = running_corrects / len(train_loader.dataset)
 
@@ -104,7 +107,10 @@ def train_model(model, criterion, optimizer, train_loader, val_loader, num_epoch
 
                 val_loss += loss.item() * inputs.size(0)
                 val_corrects += torch.sum(preds == labels.data).item()
-
+                
+        #Training Loss and Accuracy 
+        #(Average loss over the entire training dataset)
+        #(Accuracy over the entire training dataset)
         val_loss = val_loss / len(val_loader.dataset)
         val_acc = val_corrects / len(val_loader.dataset)
 
