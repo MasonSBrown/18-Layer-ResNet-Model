@@ -3,9 +3,8 @@ from torch import nn, optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
 from torchvision.models import ResNet18_Weights
-import zipfile
 import os
-import matplotlib.pyplot as plt
+import torch.optim.lr_scheduler as lr_scheduler
 
 #Two different datasets are created for training and validation
 val_dir = os.path.join('archive', "test") 
@@ -48,10 +47,6 @@ model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1) #Pretrained matr
 
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2) #2 outputs, cat and dog (fc for feature count?)
-
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
-
 # Check if MPS is available
 if torch.backends.mps.is_available():
     device = torch.device("mps")
@@ -62,14 +57,14 @@ elif torch.cuda.is_available():
 else:
     device = torch.device("cpu")
     print("MPS backend not available, using CPU")
-
 model = model.to(device) #setting device to model
 
+criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
 patience = 5
 
-def train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=10):
+def train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=10, patience=5):
     best_val_loss = float("inf")
     patience_counter = 0
     
