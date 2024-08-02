@@ -62,7 +62,6 @@ model = model.to(device) #setting device to model
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
-patience = 5
 
 def train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=10, patience=5):
     best_val_loss = float("inf")
@@ -136,4 +135,4 @@ def train_model(model, criterion, optimizer, train_loader, val_loader, num_epoch
     return model
 
 # Train the model
-model = train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=15, patience=patience)
+model = train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=15, patience=5)
