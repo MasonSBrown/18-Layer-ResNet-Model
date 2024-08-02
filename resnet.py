@@ -65,7 +65,14 @@ else:
 
 model = model.to(device) #setting device to model
 
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+patience = 5
+
 def train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=10):
+    best_val_loss = float("inf")
+    patience_counter = 0
+    
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
@@ -107,7 +114,7 @@ def train_model(model, criterion, optimizer, train_loader, val_loader, num_epoch
 
                 val_loss += loss.item() * inputs.size(0)
                 val_corrects += torch.sum(preds == labels.data).item()
-                
+
         #Training Loss and Accuracy 
         #(Average loss over the entire training dataset)
         #(Accuracy over the entire training dataset)
@@ -117,7 +124,21 @@ def train_model(model, criterion, optimizer, train_loader, val_loader, num_epoch
 
         print(f'Val Loss: {val_loss:.4f} Acc: {val_acc:.4f}')
 
+        if scheduler:
+            scheduler.step()
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            best_model_wts = model.state_dict()
+            patience_counter = 0
+        else:
+            patience_counter += 1
+            if patience_counter >= patience:
+                print("Early Stopping Now")
+                break
+
+    model.load_state_dict(best_model_wts)
     return model
 
 # Train the model
-model = train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=10)
+model = train_model(model, criterion, optimizer, train_loader, val_loader, num_epochs=15, patience=patience)
